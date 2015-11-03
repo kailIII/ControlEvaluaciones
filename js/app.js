@@ -69,6 +69,7 @@ angular.module("app", ["ngRoute"])
         $scope.nombreEvaluacion = '';
         $scope.porcentajeEvaluacion = 0;
         $scope.porcentajeTotal=0;
+        $scope.idEvaluacion = 0;
         $scope.evaluaciones = false;
         $scope.nueva = false;
         $scope.editar = false;
@@ -103,6 +104,16 @@ angular.module("app", ["ngRoute"])
             $scope.porcentajeEvaluacion = '';
         };
         
+        $scope.editarEvaluacion = function(id, porcentaje, nombre)
+        {
+            alert("dgvd");
+            /*$scope.nueva = false;
+            $scope.editar = true;
+            $scope.nombreEvaluacion = nombre;
+            $scope.porcentajeEvaluacion = porcentaje;
+            $scope.idEvaluacion = id;*/
+        };
+        
         $scope.$watch('nombreEvaluacion',function() {$scope.validar();});
         $scope.$watch('porcentajeEvaluacion',function() {$scope.validar();});
 
@@ -127,9 +138,9 @@ angular.module("app", ["ngRoute"])
                     if(response==="")
                     {
                         $http.get("./BD/getEvaluacionGrupo.php?grupo="+$scope.idGrupo)
-                    .success(function(response) {$scope.evaluacionesCurso = response;});
+                        .success(function(response) {$scope.evaluacionesCurso = response;});
                 
-                        $http.get("./BD/porcentajeTotal.php?grupo="+id)
+                        $http.get("./BD/porcentajeTotal.php?grupo="+$scope.idGrupo)
                         .success(function(response) {if(response !== ""){$scope.porcentajeTotal = response;}else{$scope.porcentajeTotal =0;}});
                     }
                     else
@@ -140,12 +151,15 @@ angular.module("app", ["ngRoute"])
             }
             else
             {
-                $http.get("/DB/update.php?id="+$scope.eid+"&nombre="+$scope.eNombre+"&porcentaje="+$scope.ePorcentaje)
+                $http.get("./BD/updateEvaluacion.php?id="+$scope.idEvaluacion+"&nombre="+$scope.nombreEvaluacion+"&porcentaje="+$scope.porcentajeEvaluacion)
                 .success(function(response){
                     if(response==="")
                     {
-                        $http.get("/DB/getEvaluaciones.php")
-                        .success(function(response) {$scope.evaluaciones = response});
+                        $http.get("./BD/getEvaluacionGrupo.php?grupo="+$scope.idGrupo)
+                        .success(function(response) {$scope.evaluacionesCurso = response;});
+                
+                        $http.get("./BD/porcentajeTotal.php?grupo="+$scope.idGrupo)
+                        .success(function(response) {if(response !== ""){$scope.porcentajeTotal = response;}else{$scope.porcentajeTotal =0;}});
                     }
                     else
                     {
@@ -161,14 +175,7 @@ angular.module("app", ["ngRoute"])
         {
             alert("Ver notas de evaluacion: "+id);
         };
-        
-        $scope.editarEvaluacion = function(id, porcentaje, nombre)
-        {
-            $scope.nueva = false;
-            $scope.editar = true;
-            $scope.nombreEvaluacion = nombre;
-            $scope.porcentajeEvaluacion = porcentaje;
-        };
+                
         
         $scope.citasRevision = function(id)
         {
