@@ -104,14 +104,13 @@ angular.module("app", ["ngRoute"])
             $scope.porcentajeEvaluacion = '';
         };
         
-        $scope.editarEvaluacion = function(id, porcentaje, nombre)
+        $scope.editarEvaluacion = function(id, n, p)
         {
-            alert("dgvd");
-            /*$scope.nueva = false;
+            $scope.nueva = false;
             $scope.editar = true;
-            $scope.nombreEvaluacion = nombre;
-            $scope.porcentajeEvaluacion = porcentaje;
-            $scope.idEvaluacion = id;*/
+            $scope.nombreEvaluacion = n;
+            $scope.porcentajeEvaluacion = p;
+            $scope.idEvaluacion = id;
         };
         
         $scope.$watch('nombreEvaluacion',function() {$scope.validar();});
@@ -142,6 +141,7 @@ angular.module("app", ["ngRoute"])
                 
                         $http.get("./BD/porcentajeTotal.php?grupo="+$scope.idGrupo)
                         .success(function(response) {if(response !== ""){$scope.porcentajeTotal = response;}else{$scope.porcentajeTotal =0;}});
+                        $scope.nueva = false;
                     }
                     else
                     {
@@ -160,6 +160,7 @@ angular.module("app", ["ngRoute"])
                 
                         $http.get("./BD/porcentajeTotal.php?grupo="+$scope.idGrupo)
                         .success(function(response) {if(response !== ""){$scope.porcentajeTotal = response;}else{$scope.porcentajeTotal =0;}});
+                        $scope.editar = false;
                     }
                     else
                     {
