@@ -14,8 +14,8 @@
 <div style="background: white" class="container">    
     <div class="panel-body">
         <h3> <span class =" label label-success">Mis cursos</span></h3>
-        <div style="overflow-y:auto; height:250px">
-            <table class="table table-striped">
+        <div style="overflow-y:auto; height:400px;">
+            <table class="table table-striped" id="tableCursos">
               <thead>
                 <tr>         
                   <th>&nbsp;</th>
@@ -26,7 +26,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="curso in MisCursos">
-                  <td><span ng-click="verEvaluaciones(curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-down"></span></td>
+                  <td><span ng-click="verEvaluaciones(curso.cont, curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-down"></span></td>
                   <td>{{ curso.codigo }}</td>
                   <td>{{ curso.numgrupo }}</td>
                   <td>{{ curso.nombre }}</td>                   

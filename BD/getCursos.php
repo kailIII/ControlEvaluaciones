@@ -15,8 +15,17 @@ $query = "select gf.idgrupo, g.codigo, numgrupo, nombre
 $result = pg_query($conn, $query);
 
 $arr = array();
-while ($row = pg_fetch_assoc($result)) {
-    $arr[] = $row;
+$cont = 1;
+while ($row = pg_fetch_row($result)) {
+    $arr[] = array(
+        'idgrupo' => $row[0],
+        'codigo' => $row[1],
+        'numgrupo' => $row[2],
+        'nombre' => $row[3],
+        'cont' => $cont
+    );
+    
+    $cont++;
 }
 
 echo json_encode($arr);
