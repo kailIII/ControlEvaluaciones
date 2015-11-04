@@ -1,1 +1,38 @@
-<div>Student</div>
+<div style="background: white" class="panel-heading container">
+    <div class="col-md-12">
+        <div class="col-md-11 col-sm-10 col-xs-10"><h3>{{info.nombre}}</h3></div>
+        <div class="col-md-1 col-sm-2 col-xs-2">
+            <h2>
+                <button class="btn btn-success" ng-click="logout()">
+                    <span class="glyphicon glyphicon-log-out"></span> Salir
+                </button>
+            </h2>
+        </div>
+    </div>    
+</div>
+<br>
+<div style="background: white" class="container">    
+    <div class="panel-body">
+        <h3> <span class =" label label-success">Mis cursos</span></h3>
+        <div style="overflow-y:auto; height:400px;">
+            <table class="table table-striped" id="tableCursos">
+              <thead>
+                <tr>         
+                  <th>&nbsp;</th>
+                  <th>Codigo</th>
+                  <th>Grupo</th>
+                  <th>Nombre del curso</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="curso in MisCursos">
+                  <td><span ng-click="verEvaluaciones(curso.cont, curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-down"></span></td>
+                  <td>{{ curso.codigo }}</td>
+                  <td>{{ curso.numgrupo }}</td>
+                  <td>{{ curso.nombre }}</td>                   
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>    
+</div>
