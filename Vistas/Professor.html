@@ -26,7 +26,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="curso in MisCursos">
-                  <td><span ng-click="verEvaluaciones(curso.cont, curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-down"></span></td>
+                  <td><span ng-click="verEvaluaciones(curso.cont, curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-right"></span></td>
                   <td>{{ curso.codigo }}</td>
                   <td>{{ curso.numgrupo }}</td>
                   <td>{{ curso.nombre }}</td>                   
@@ -37,6 +37,7 @@
     </div>    
 </div>
 <br>
+<!--
 <div ng-show="evaluaciones" style="background: white" class="container">
 <h3> <span class =" label label-success">{{cursoNombre}} - Evaluaciones</span></h3>
     <div style="overflow-y:auto; height:250px">
@@ -54,14 +55,14 @@
               <td>{{ evaluacion.nombre }}</td>
               <td>{{ evaluacion.porcentaje }}</td>
               <td>
-                <button class="btn" ng-click="editarEvaluacion(evaluacion.idevaluacion,evaluacion.nombre,evaluacion.porcentaje)">
+                <button class="btn" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="editarEvaluacion(evaluacion.idevaluacion,evaluacion.nombre,evaluacion.porcentaje)">
                   <span class="glyphicon glyphicon-edit"></span>  Editar
                 </button>
-                  <button class="btn" ng-click="verNotas(evaluacion.idevaluacion)">
+                  <button class="btn" data-toggle="modal" data-target="#historialNotas" ng-click="verNotas(evaluacion.idevaluacion, idGrupo,evaluacion.nombre,evaluacion.porcentaje)">
                   <span class="glyphicon glyphicon-th-list"></span>  Ver notas
                 </button>
                 <button class="btn" ng-click="citasRevision(evaluacion.idevaluacion)">
-                  <span class="glyphicon glyphicon-calendar"></span>  Cistas de revision
+                  <span class="glyphicon glyphicon-calendar"></span>  Citas de revision
                 </button>
               </td>
             </tr>
@@ -76,32 +77,87 @@
         </table>        
     </div>
     <hr>
-    <button class="btn btn-success" ng-click="agregarEvaluacion()">
+    <button class="btn btn-success" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="agregarEvaluacion()">
         <span class="glyphicon glyphicon-plus"></span>  Nueva Evaluación
     </button>
+    <br>
+    <br>
 </div>
 <br>
-<div ng-show="nueva || editar" style="background: white" class="container">    
-    <h3 ng-show="nueva">Crear Nueva Evaluación:</h3>
-    <h3 ng-show="editar">Editar Evaluación {{nombreEvaluacion}}:</h3>
+-->
 
-    <form role="form">
-        <div class="form-group">
-            <label >Nombre de la evaluación:</label>
-            <div>
-                <input type="text" class="form-control" ng-model="nombreEvaluacion" placeholder="Nombre de la evaluación">
-            </div>
-        </div> 
-        <div class="form-group">
-            <label>Porcentaje de evaluación:</label>
-            <div>
-                <input type="text" class="form-control" ng-model="porcentajeEvaluacion" placeholder="Porcentaje de evaluación">
-            </div>
-        </div>
-        <hr>
-        <button class="btn btn-success" ng-disabled="error" ng-click="guardarEvaluacion()">
-            <span class="glyphicon glyphicon-save"></span>  Guardar Cambios
+<div class="modal fade" id="ManteEvaluaciones" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 ng-show="nueva">Crear Nueva Evaluación</h3>
+        <h3 ng-show="editar">Editar Evaluación {{nombreEvaluacion}}</h3>
+      </div>
+      <div class="modal-body">
+        <form role="form">
+            <div class="form-group">
+                <label >Nombre de la evaluación:</label>
+                <div>
+                    <input type="text" class="form-control" ng-model="nombreEvaluacion" placeholder="Nombre de la evaluación">
+                </div>
+            </div> 
+            <div class="form-group">
+                <label>Porcentaje de evaluación:</label>
+                <div>
+                    <input type="text" class="form-control" ng-model="porcentajeEvaluacion" placeholder="Porcentaje de evaluación">
+                </div>
+            </div>            
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" data-dismiss="modal" ng-disabled="error" ng-click="guardarEvaluacion()">
+            <span class="glyphicon glyphicon-floppy-disk"></span>  Guardar Cambios
         </button>
-    </form>
-    
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="historialNotas" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Historial de Evaluaciones - {{nombreEvaluacion}} - {{porcentajeEvaluacion}}%</h3>
+      </div>
+      <div class="modal-body">
+          <div style="overflow-y:auto; height:350px">
+            <table class="table table-striped">
+                <thead>
+                  <tr>         
+                    <th>Cedula</th>
+                    <th>Nombre Completo</th>
+                    <th>Nota</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="calificacion in historialNotas">
+                      <td>{{ calificacion.cedula }}</td>
+                      <td>{{ calificacion.nombre }}</td>
+                      <td>
+                        <div class="col-md-4">
+                            <input id="{{ calificacion.cedula }}" ng-blur="guardarCalificacion(calificacion.cedula, this)" type="text" class="form-control input-small input-md" value="{{calificacion.nota}}">
+                        </div>                        
+                      </td>                 
+                    </tr>
+                </tbody>
+              </table>
+          </div>          
+      </div>
+      <div class="modal-footer">
+        <span id="estado" class="text-danger">{{estado}}</span>
+        <button class="btn btn-success" data-dismiss="modal" ng-click="">
+            <span class="glyphicon glyphicon-ok"></span>  Terminado
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -60,11 +60,12 @@ angular.module("app", ["ngRoute"])
         };
     })
     
-    .controller("professorController", function($scope, $http, $location, Data){
+    .controller("professorController", function($scope, $http, $location, $timeout, Data, $compile){
         $scope.rowSelected = 0;
         $scope.info = Data.info;
         $scope.MisCursos = {};
         $scope.evaluacionesCurso = [];
+        $scope.historialNotas = {};
         $scope.cursoNombre = '';
         $scope.idGrupo = '';
         $scope.nombreEvaluacion = '';
@@ -75,6 +76,7 @@ angular.module("app", ["ngRoute"])
         $scope.nueva = false;
         $scope.editar = false;
         $scope.error = false;
+        $scope.estado = ""; 
         
         $http.get("./BD/getCursos.php?cedula="+$scope.info.cedula)
         .success(function(response) {$scope.MisCursos = response;});
@@ -140,18 +142,29 @@ angular.module("app", ["ngRoute"])
                     spanCitas.setAttribute('class', 'glyphicon glyphicon-calendar');
 
                     btnEditar = document.createElement('button');
+                    btnEditar.setAttribute('data-toggle', 'modal'); 
+                    btnEditar.setAttribute('data-target', '#ManteEvaluaciones'); 
                     btnEditar.setAttribute('class', 'btn'); 
-                    btnEditar.setAttribute('ng-click', "editarEvaluacion("+$scope.evaluacionesCurso[i].idevaluacion+", "+$scope.evaluacionesCurso[i].nombre+", "+$scope.evaluacionesCurso[i].porcentaje+")");
+                    
+                    btnEditar.setAttribute('ng-click', "editarEvaluacion("+$scope.evaluacionesCurso[i].idevaluacion+","+$scope.evaluacionesCurso[i].nombre+","+$scope.evaluacionesCurso[i].porcentaje+")");
+                    
                     btnEditar.appendChild(spanEditar);
 
                     btnVer = document.createElement('button');
+                    btnVer.setAttribute('data-toggle', 'modal'); 
+                    btnVer.setAttribute('data-target', '#historialNotas');
                     btnVer.setAttribute('class', 'btn'); 
-                    btnVer.setAttribute('ng-click', "verNotas("+$scope.evaluacionesCurso[i].idevaluacion+")");
+                    
+                    btnVer.setAttribute('ng-click', "verNotas("+$scope.evaluacionesCurso[i].idevaluacion+","+$scope.idGrupo+","+$scope.evaluacionesCurso[i].nombre+","+$scope.evaluacionesCurso[i].porcentaje+")");
+                    
                     btnVer.appendChild(spanVer);
 
-                    btnCitas = document.createElement('button');
-                    btnCitas.setAttribute('class', 'btn'); 
-                    btnCitas.setAttribute('ng-click', "citasRevision("+$scope.evaluacionesCurso[i].idevaluacion+")");
+                    btnCitas = document.createElement('button');                    
+                    btnCitas.setAttribute('class', 'btn');
+                    btnCitas.setAttribute('id', 'btn1');
+                    
+                    btnCitas.setAttribute('ng-click',"citasRevision("+$scope.evaluacionesCurso[i].idevaluacion+")");
+                    
                     btnCitas.appendChild(spanCitas);
 
                     editarCuerpo.appendChild(btnEditar);
@@ -183,20 +196,22 @@ angular.module("app", ["ngRoute"])
             var tabla = document.getElementById("tableCursos");
             var rowCursos = tabla.insertRow(num+1);
             rowCursos.appendChild(th);
-
+            /*
             var flechita = table.rows[num].cells[0].firstChild;
-            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-down');
+            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-down');*/
         }
 
         function ocultarEvaluaciones() {
             var table = document.getElementById("tableCursos");
             table.deleteRow($scope.rowSelected+1);
-
+            
+            /*
             var flechita = table.rows[$scope.rowSelected].cells[0].firstChild;
-            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-right');
+            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-right');*/
 
             $scope.rowSelected = 0;
         }
+      
                     
         $scope.verEvaluaciones = verEvaluaciones;
         function verEvaluaciones(row, id, nombre)
@@ -224,6 +239,7 @@ angular.module("app", ["ngRoute"])
         
         $scope.editarEvaluacion = function(id, n, p)
         {
+            console.log("Editar: "+id+ n+p);
             $scope.nueva = false;
             $scope.editar = true;
             $scope.nombreEvaluacion = n;
@@ -290,11 +306,27 @@ angular.module("app", ["ngRoute"])
             }
         };
         
-        $scope.verNotas = function(id)
+        $scope.verNotas = function(id, gr,n,p)
         {
-            alert("Ver notas de evaluacion: "+id);
+            $scope.nombreEvaluacion = n;
+            $scope.porcentajeEvaluacion = p; 
+            $scope.idEvaluacion = id;
+            
+            $http.get("./BD/getHistorialNotas.php?grupo="+gr+"&evaluacion="+id)
+            .success(function(response) {$scope.historialNotas = response;});
         };
                 
+        $scope.guardarCalificacion = function(ced)
+        {
+            document.getElementById('estado').setAttribute("class","text-danger");
+            $scope.estado = "Guardando cambios.";
+            $http.get("./BD/insertarCalificacion.php?cedula="+ced+"&evaluacion="+$scope.idEvaluacion+"&nota="+document.getElementById(ced).value)
+            .success(function(response) {});
+            $timeout(function(){
+                document.getElementById('estado').setAttribute("class","text-success");
+                $scope.estado = "Guardado.";}, 1000);
+            
+        };
         
         $scope.citasRevision = function(id)
         {
