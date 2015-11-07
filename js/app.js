@@ -339,10 +339,70 @@ angular.module("app", ["ngRoute"])
         $scope.info = Data.info;
         $scope.rowSelected = 0;
         $scope.evaluacionesCurso = [];
+        $scope.showEvaluaciones = false;
+        $scope.porcentaje = 0;
+        $scope.nota = 0;
+        $scope.notaProyectada = 0;
+        $scope.selectedCita = true;
+        $scope.nombreEvaluacion = "";
+        $scope.conCita = false;
+        $scope.sinCita = false;
+        $scope.estadisticas = false;
         $scope.verEvaluaciones = verEvaluaciones;
         $scope.logout = logout;
-        $scope.mostrarEvaluaciones = mostrarEvaluaciones;
-        $scope.ocultarEvaluaciones = ocultarEvaluaciones;
+        $scope.citasRevision = citasRevision;
+        $scope.calcularNota = calcularNota;
+        $scope.agregarCitaRevision = agregarCitaRevision;
+        $scope.selectCita = selectCita;
+        
+        function selectCita(idCita) {
+            $scope.citaSelecionada = idCita;
+            $scope.selectedCita = false;
+        }
+
+        function calcularNota() {
+            $scope.porcentaje = 0;
+            $scope.nota = 0;
+            $scope.notaProyectada = 0;
+
+            for(var i=0; i<$scope.evaluacionesCurso.length; i++) {
+                $scope.porcentaje += parseInt($scope.evaluacionesCurso[i].porcentaje);
+                $scope.nota += $scope.evaluacionesCurso[i].nota * ($scope.evaluacionesCurso[i].porcentaje/100);
+            }
+
+            $scope.notaProyectada = $scope.nota + (100-$scope.porcentaje);
+            $scope.estadisticas = true;
+        }
+        
+        function agregarCitaRevision() {
+            $http.get("./BD/insertarCitaRevisionEstudiante.php?idCita="+$scope.citaSelecionada+"&cedula="+Data.info.cedula)
+            .success(function(response) {
+                
+            }); 
+        }
+
+        function citasRevision(nombre, idEvaluacion) {
+            $scope.conCita = false;
+            $scope.sinCita = false;
+            $scope.selectedCita = true;
+            $scope.nombreEvaluacion = nombre;
+
+            $http.get("./BD/getCitaEvaluacion.php?idEval="+idEvaluacion+"&cedula="+$scope.info.cedula)
+            .success(function(response) {
+                if(response) {
+                    $scope.citaRevision = response;
+                    $scope.conCita = true;
+                }
+                else {
+                    $http.get("./BD/citasRevisionEstudiante.php?idEval="+idEvaluacion+"&cedula="+$scope.info.cedula)
+                    .success(function(response) {
+
+                        $scope.citas = response;
+                        $scope.sinCita = true;
+                    }); 
+                }
+            });
+        }
         
         $http.get("./BD/getCursosStudent.php?cedula="+$scope.info.cedula)
             .success(function(response) {
@@ -352,95 +412,23 @@ angular.module("app", ["ngRoute"])
         function logout() {
             $location.path('/');
         };
-
-        function mostrarEvaluaciones(num, id) {
-            if($scope.rowSelected > 0) {
-                ocultarEvaluaciones();
-            }
-            
-            $scope.rowSelected = num;
-            console.log("Luego del http -> ",$scope.evaluacionesCurso);
-
-            var th = document.createElement('th');
-            th.setAttribute('colspan', '4');
-            var div = document.createElement('div');
-            div.setAttribute('class', 'container');
-            div.setAttribute('style', 'overflow-y: auto; height: 200px; width: 100%;');
-            
-            var table = document.createElement('table');
-            table.setAttribute('class', 'table table-striped');
-            var thead = document.createElement('thead');
-            var trEncabezado = document.createElement('tr');
-            var rowNombre = document.createElement('th');
-            rowNombre.appendChild(document.createTextNode('Nombre'));
-            var rowProcentaje = document.createElement('th');
-            rowProcentaje.appendChild(document.createTextNode('Porcentaje'));
-            var rowNota = document.createElement('th');
-            rowNota.appendChild(document.createTextNode('Nota'));
-            
-            if($scope.evaluacionesCurso.length > 0) {
-                console.log($scope.evaluacionesCurso.length);
-                var tbody = document.createElement('tbody');
-
-                var trCuerpo, nombreCuerpo, porcentajeCuerpo, notaCuerpo;
-
-                for(var i=0; i<$scope.evaluacionesCurso.length; i++) {
-                    trCuerpo = document.createElement('tr');
-
-                    nombreCuerpo = document.createElement('th');
-                    nombreCuerpo.appendChild(document.createTextNode($scope.evaluacionesCurso[i].nombre));
-                    porcentajeCuerpo = document.createElement('th');
-                    porcentajeCuerpo.appendChild(document.createTextNode($scope.evaluacionesCurso[i].porcentaje));
-                    notaCuerpo = document.createElement('th');
-                    notaCuerpo.appendChild(document.createTextNode($scope.evaluacionesCurso[i].nota));
-
-                    trCuerpo.appendChild(nombreCuerpo);
-                    trCuerpo.appendChild(porcentajeCuerpo);
-                    trCuerpo.appendChild(notaCuerpo);
-
-                    tbody.appendChild(trCuerpo);
-                }
-
-                table.appendChild(tbody);
-            }
-
-            th.appendChild(div);
-            div.appendChild(table);
-            table.appendChild(thead);
-            thead.appendChild(trEncabezado);
-            trEncabezado.appendChild(rowNombre);
-            trEncabezado.appendChild(rowProcentaje);
-            trEncabezado.appendChild(rowNota);
-
-            var table = document.getElementById("tableCursos");
-            var rowCursos = table.insertRow(num+1);
-            rowCursos.appendChild(th);
-
-            var flechita = table.rows[num].cells[0].firstChild;
-            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-down');
-        }
-
-        function ocultarEvaluaciones() {
-            var table = document.getElementById("tableCursos");
-            table.deleteRow($scope.rowSelected+1);
-
-            var flechita = table.rows[$scope.rowSelected].cells[0].firstChild;
-            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-right');
-
-            $scope.rowSelected = 0;
-        }
         
-        function verEvaluaciones(row, id, nombre)
+        function verEvaluaciones(id, nombre)
         {
+            $scope.porcentaje = 0;
+            $scope.nota = 0;
             $scope.cursoNombre = nombre;
             $scope.idGrupo = id;
             $scope.evaluacionesCurso = [];
             
+            $scope.showEvaluaciones = true;
+            $scope.estadisticas = false;
+            
             $http.get("./BD/getEvaluacionesStudent.php?cedula="+$scope.info.cedula+"&idGrupo="+id)
             .success(function(response) {
                 $scope.evaluacionesCurso = response;
-                console.log("$scope.evaluacionesCurso -> ",$scope.evaluacionesCurso);
-                mostrarEvaluaciones(row, id);
+                if(response.length > 0)
+                    calcularNota(); 
             });
         };
     });

@@ -14,25 +14,153 @@
 <div style="background: white" class="container">    
     <div class="panel-body">
         <h3> <span class =" label label-success">Mis cursos</span></h3>
-        <div style="overflow-y:auto; height:400px;">
+        <div style="overflow-y:auto; height:250px;">
             <table class="table table-striped" id="tableCursos">
               <thead>
                 <tr>         
-                  <th>&nbsp;</th>
                   <th>Codigo</th>
                   <th>Grupo</th>
                   <th>Nombre del curso</th>
+                  <th>Ver evaluaciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr ng-repeat="curso in MisCursos">
-                  <td><span ng-click="verEvaluaciones(curso.cont, curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-down"></span></td>
                   <td>{{ curso.codigo }}</td>
                   <td>{{ curso.numgrupo }}</td>
-                  <td>{{ curso.nombre }}</td>                   
+                  <td>{{ curso.nombre }}</td>      
+                  <td><button class="btn"><span ng-click="verEvaluaciones(curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-list-alt"></span></button></td>
                 </tr>
               </tbody>
             </table>
         </div>
     </div>    
 </div>
+<br>
+<div style="background: white" class="container" ng-show="showEvaluaciones">
+    <div class="panel-body">
+        <h3> <span class =" label label-success">Evaluaciones de {{cursoNombre}}</span></h3>
+        <div style="overflow-y:auto; height:250px;">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Porcentaje</th>
+                  <th>Nota</th>
+                  <th>Citas de revision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="eval in evaluacionesCurso">
+                  <td>{{ eval.nombre }}</td>
+                  <td>{{ eval.porcentaje }}</td>
+                  <td>{{ eval.nota }}</td>
+                  <td><button class="btn" data-toggle="modal" data-target="#CitasEval" ng-click="citasRevision(eval.nombre,eval.idevaluacion)"><span class="glyphicon glyphicon-calendar"></span></button></td>
+                </tr>
+              </tbody>
+              <tfoot ng-show="estadisticas">
+                  <tr>
+                    <td colspan="4" class="text-center"><h5><b>Estadísticas del curso</b></h5></td>
+                  </tr>
+                  <tr>
+                    <td>Porcentaje total evaluado</td>
+                    <td colspan="3">
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{porcentaje}}%;">
+                          {{porcentaje}}%
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Nota</td>
+                    <td colspan="3">
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{nota}}%;">
+                          {{nota}}%
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Porcentaje proyectado de nota</td>
+                    <td colspan="3">
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{notaProyectada}}%;">
+                          {{notaProyectada}}%
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+              </tfoot>
+            </table>
+        </div>
+    </div>    
+</div>
+
+<div class="modal fade" id="CitasEval" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+  <div ng-show="sinCita">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3>Citas de revisión de {{nombreEvaluacion}}</h3>
+        </div>
+        <div class="modal-body">
+          <label>Seleccione una de las citas</label>
+          <div style="overflow-y:auto; height:250px;">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Fecha</th>
+                    <th>Hora de inicio</th>
+                    <th>Hora de fin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="cita in citas">
+                    <td><input type="radio" name="checkCita" ng-click="selectCita(cita.idcita)"></td>
+                    <td>{{ cita.fecha }}</td>
+                    <td>{{ cita.hora_inicio }}</td>
+                    <td>{{ cita.hora_fin }}</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button ng-disabled="selectedCita" class="btn btn-success" data-dismiss="modal" ng-disabled="error" ng-click="agregarCitaRevision()">
+              <span class="glyphicon glyphicon-ok"></span> Listo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-show="conCita">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3>Cita de revisión de {{nombreEvaluacion}}</h3>
+        </div>
+        <div class="modal-body text-center">
+          <p>
+            <label>Su cita de revisión es el {{citaRevision[1]}}.</label>
+          </p>
+          <p>
+            <label>Inicia a las {{citaRevision[2]}} y finaliza a las {{citaRevision[3]}}.</label>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button ng-disabled="selectedCita" class="btn btn-success" data-dismiss="modal" ng-disabled="error" ng-click="agregarCitaRevision()">
+              <span class="glyphicon glyphicon-ok"></span> Listo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
