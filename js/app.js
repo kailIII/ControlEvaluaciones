@@ -77,7 +77,14 @@ angular.module("app", ["ngRoute"])
         $scope.nueva = false;
         $scope.editar = false;
         $scope.error = false;
-        $scope.estado = ""; 
+        $scope.estado = "";
+
+        $scope.fechaCita = "";
+        $scope.horaInicio = "";
+        $scope.horaFin = "";
+        $scope.crearCita = false;
+        $scope.verCitas = false;
+        $scope.errorCitas = false;
         
         $http.get("./BD/getCursos.php?cedula="+$scope.info.cedula)
         .success(function(response) {$scope.MisCursos = response;});
@@ -86,6 +93,52 @@ angular.module("app", ["ngRoute"])
         {
             $location.path('/');
         };
+
+        $scope.$watch('fechaCita',function() {$scope.validarCita();});
+        $scope.$watch('horaInicio',function() {$scope.validarCita();});
+        $scope.$watch('horaFin',function() {$scope.validarCita();});
+
+        $scope.validarCita = function() 
+        {
+            if(!$scope.fechaCita.length || !$scope.horaInicio.length || !$scope.horaFin.length) 
+            {
+               $scope.errorCitas = true;
+            }
+            else
+            {
+               $scope.errorCitas = false;
+            }
+        };
+
+        $scope.tabNuevaCita = function() {
+            $scope.verCitas = false;
+            $scope.crearCita = true;
+            
+            document.getElementById('tabNuevaCita').className = 'btn btn-primary';
+            document.getElementById('tabVerCitas').className = 'btn btn-default';
+            document.getElementById('modalCitas').className = 'modal-dialog modal-md';
+        }
+        $scope.tabVerCitas = function() {
+            $scope.crearCita = false;
+            $scope.verCitas = true;
+
+            document.getElementById('tabNuevaCita').className = 'btn btn-default';
+            document.getElementById('tabVerCitas').className = 'btn btn-primary';
+            document.getElementById('modalCitas').className = 'modal-dialog modal-lg';
+
+            $http.get("./BD/getCitasRevisionProfesor.php?idEval="+$scope.idEvaluacion)
+            .success(function(response) {
+                $scope.citas = response;
+            });
+        }
+
+        $scope.agregarCitaRevision = function() {
+            $http.get("./BD/insertarCitaRevisionProfesor.php?idEval="+$scope.idEvaluacion+"&fecha="+$scope.fechaCita+"&horaInicio="+$scope.horaInicio+"&horaFin="+$scope.horaFin)
+            .success(function(response) {
+                console.log(response);
+            });
+        }
+
         $scope.verEvaluaciones = function(id, gr,nombre)
         {
             $scope.cursoNombre = nombre;
@@ -203,7 +256,13 @@ angular.module("app", ["ngRoute"])
         
         $scope.citasRevision = function(id)
         {
-            alert("citas evaluacion: "+id);
+            $scope.crearCita = true;
+            $scope.verCitas = false;
+            $scope.idEvaluacion = id;
+
+            $scope.fechaCita = "";
+            $scope.horaInicio = "";
+            $scope.horaFin = "";
         };
         
     })
@@ -229,7 +288,7 @@ angular.module("app", ["ngRoute"])
         $scope.selectCita = selectCita;
         
         function selectCita(idCita) {
-            $scope.citaSelecionada = idCita;
+            $scope.citaSeleccionada = idCita;
             $scope.selectedCita = false;
         }
 
@@ -248,7 +307,8 @@ angular.module("app", ["ngRoute"])
         }
         
         function agregarCitaRevision() {
-            $http.get("./BD/insertarCitaRevisionEstudiante.php?idCita="+$scope.citaSelecionada+"&cedula="+Data.info.cedula)
+            alert($scope.citaSeleccionada);
+            $http.get("./BD/insertarCitaRevisionEstudiante.php?idCita="+$scope.citaSeleccionada+"&cedula="+Data.info.cedula)
             .success(function(response) {
                 
             }); 

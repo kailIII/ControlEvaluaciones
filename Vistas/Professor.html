@@ -64,7 +64,7 @@
                   <button class="btn" data-toggle="modal" data-target="#historialNotas" ng-click="verNotas(evaluacion.idevaluacion, idGrupo,evaluacion.nombre,evaluacion.porcentaje)">
                   <span class="glyphicon glyphicon-th-list"></span>  Ver notas
                 </button>
-                <button class="btn" ng-click="citasRevision(evaluacion.idevaluacion)">
+                <button class="btn" data-toggle="modal" data-target="#CitasEval" ng-click="citasRevision(evaluacion.idevaluacion)">
                   <span class="glyphicon glyphicon-calendar"></span>  Citas de revision
                 </button>
               </td>
@@ -160,6 +160,63 @@
         <button class="btn btn-success" data-dismiss="modal" ng-click="">
             <span class="glyphicon glyphicon-ok"></span>  Terminado
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="CitasEval" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div id="modalCitas" class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <div class="btn-group">
+            <button id="tabNuevaCita" type="button" class="btn btn-primary" ng-click="tabNuevaCita()">Nueva cita</button>
+            <button id="tabVerCitas" type="button" class="btn btn-default" ng-click="tabVerCitas()">Ver citas</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div ng-show="crearCita" style="overflow-y:auto; height:250px;">
+              <p>
+                <label>Fecha</label>
+                <input class="form-control" type="text" ng-model="fechaCita" placeholder="Ej: aaaa-mm-dd">
+              </p>
+              <p>
+                <label>Inicia a las</label>
+                <input class="form-control" type="text" ng-model="horaInicio" placeholder="Ej: hh:mm:ss">
+              </p>
+              <p>
+                <label>Finaliza a las</label>
+                <input class="form-control" type="text" ng-model="horaFin" placeholder="Ej: hh:mm:ss">
+              </p>
+          </div>
+          <div ng-show="verCitas" style="overflow-y:auto; height:250px;">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Fecha</th>
+                  <th>Hora de inicio</th>
+                  <th>Hora de fin</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="cita in citas">
+                  <td>{{ cita.nombre }}</td>
+                  <td>{{ cita.fecha }}</td>
+                  <td>{{ cita.hora_inicio }}</td>
+                  <td>{{ cita.hora_fin }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button ng-show="crearCita" class="btn btn-success" data-dismiss="modal" ng-disabled="errorCitas" ng-click="agregarCitaRevision()">
+              <span class="glyphicon glyphicon-ok"></span> Listo
+          </button>
+        </div>
       </div>
     </div>
   </div>
