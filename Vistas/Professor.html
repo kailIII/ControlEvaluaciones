@@ -14,22 +14,25 @@
 <div style="background: white" class="container">    
     <div class="panel-body">
         <h3> <span class =" label label-success">Mis cursos</span></h3>
-        <div style="overflow-y:auto; height:400px;">
+        <div style="overflow-y:auto; height:200px;">
             <table class="table table-striped" id="tableCursos">
               <thead>
-                <tr>         
-                  <th>&nbsp;</th>
+                <tr>                           
                   <th>Codigo</th>
                   <th>Grupo</th>
                   <th>Nombre del curso</th>
+                  <th>&nbsp;</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="curso in MisCursos">
-                  <td><span ng-click="verEvaluaciones(curso.cont, curso.idgrupo, curso.nombre)" class="glyphicon glyphicon-chevron-right"></span></td>
+                <tr ng-repeat="curso in MisCursos">                  
                   <td>{{ curso.codigo }}</td>
                   <td>{{ curso.numgrupo }}</td>
-                  <td>{{ curso.nombre }}</td>  
+                  <td>{{ curso.nombre }}</td>      
+                  <td>
+                      <button class="btn" ng-click="verEvaluaciones(curso.idgrupo, curso.numgrupo ,curso.nombre)">
+                        <span class="glyphicon glyphicon-list-alt"></span>  Ver Evaluaciones
+                      </button>
                 </tr>
               </tbody>
             </table>
@@ -37,10 +40,10 @@
     </div>    
 </div>
 <br>
-<!--
+
 <div ng-show="evaluaciones" style="background: white" class="container">
-<h3> <span class =" label label-success">{{cursoNombre}} - Evaluaciones</span></h3>
-    <div style="overflow-y:auto; height:250px">
+<h3> <span class =" label label-default">{{cursoNombre}} - {{numgrupo}} - Evaluaciones</span></h3>
+    <div style="overflow-y:auto; height:200px">
         <table class="table table-striped">
           <thead>
             <tr>          
@@ -84,7 +87,7 @@
     <br>
 </div>
 <br>
--->
+
 
 <div class="modal fade" id="ManteEvaluaciones" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
   <div class="modal-dialog">

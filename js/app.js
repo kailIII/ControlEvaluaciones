@@ -68,6 +68,7 @@ angular.module("app", ["ngRoute"])
         $scope.historialNotas = {};
         $scope.cursoNombre = '';
         $scope.idGrupo = '';
+        $scope.numgrupo = '';
         $scope.nombreEvaluacion = '';
         $scope.porcentajeEvaluacion = 0;
         $scope.porcentajeTotal=0;
@@ -85,143 +86,15 @@ angular.module("app", ["ngRoute"])
         {
             $location.path('/');
         };
-        
-        $scope.mostrarEvaluaciones = mostrarEvaluaciones;
-        $scope.ocultarEvaluaciones = ocultarEvaluaciones;
-
-        function mostrarEvaluaciones(num) {
-            if($scope.rowSelected > 0) {
-                ocultarEvaluaciones();
-            }
-
-            $scope.rowSelected = num;
-
-            var th = document.createElement('th');
-            th.setAttribute('colspan', '4');
-            var div = document.createElement('div');
-            div.setAttribute('class', 'container');
-            div.setAttribute('style', 'overflow-y: auto; height: 200px; width: 100%;');
-            
-            var table = document.createElement('table');
-            table.setAttribute('class', 'table table-striped');
-            var thead = document.createElement('thead');
-            var trEncabezado = document.createElement('tr');
-            var rowNombre = document.createElement('th');
-            rowNombre.appendChild(document.createTextNode('Nombre'));
-            var rowProcentaje = document.createElement('th');
-            rowProcentaje.appendChild(document.createTextNode('Porcentaje'));
-            var rowEditar = document.createElement('th');
-            rowEditar.appendChild(document.createTextNode('Editar'));
-            var rowVer = document.createElement('th');
-            rowVer.appendChild(document.createTextNode('Ver'));
-            var rowCitas = document.createElement('th');
-            rowCitas.appendChild(document.createTextNode('Citas de revision'));
-            
-            if($scope.evaluacionesCurso.length > 0) {
-                console.log($scope.evaluacionesCurso.length);
-                var tbody = document.createElement('tbody');
-
-                var trCuerpo, nombreCuerpo, porcentajeCuerpo, editarCuerpo, verCuerpo, citasCuerpo, btnEditar, btnVer, btnCitas, spanEditar, spanVer, spanCitas;
-
-                for(var i=0; i<$scope.evaluacionesCurso.length; i++) {
-                    trCuerpo = document.createElement('tr');
-
-                    nombreCuerpo = document.createElement('th');
-                    nombreCuerpo.appendChild(document.createTextNode($scope.evaluacionesCurso[i].nombre));
-                    porcentajeCuerpo = document.createElement('th');
-                    porcentajeCuerpo.appendChild(document.createTextNode($scope.evaluacionesCurso[i].porcentaje));
-                    editarCuerpo = document.createElement('th');
-                    verCuerpo = document.createElement('th');
-                    citasCuerpo = document.createElement('th');
-
-                    spanEditar = document.createElement('span');
-                    spanEditar.setAttribute('class', 'glyphicon glyphicon-edit');
-                    spanVer = document.createElement('span');
-                    spanVer.setAttribute('class', 'glyphicon glyphicon-th-list');
-                    spanCitas = document.createElement('span');
-                    spanCitas.setAttribute('class', 'glyphicon glyphicon-calendar');
-
-                    btnEditar = document.createElement('button');
-                    btnEditar.setAttribute('data-toggle', 'modal'); 
-                    btnEditar.setAttribute('data-target', '#ManteEvaluaciones'); 
-                    btnEditar.setAttribute('class', 'btn'); 
-                    
-                    btnEditar.setAttribute('ng-click', "editarEvaluacion("+$scope.evaluacionesCurso[i].idevaluacion+","+$scope.evaluacionesCurso[i].nombre+","+$scope.evaluacionesCurso[i].porcentaje+")");
-                    
-                    btnEditar.appendChild(spanEditar);
-
-                    btnVer = document.createElement('button');
-                    btnVer.setAttribute('data-toggle', 'modal'); 
-                    btnVer.setAttribute('data-target', '#historialNotas');
-                    btnVer.setAttribute('class', 'btn'); 
-                    
-                    btnVer.setAttribute('ng-click', "verNotas("+$scope.evaluacionesCurso[i].idevaluacion+","+$scope.idGrupo+","+$scope.evaluacionesCurso[i].nombre+","+$scope.evaluacionesCurso[i].porcentaje+")");
-                    
-                    btnVer.appendChild(spanVer);
-
-                    btnCitas = document.createElement('button');                    
-                    btnCitas.setAttribute('class', 'btn');
-                    btnCitas.setAttribute('id', 'btn1');
-                    
-                    btnCitas.setAttribute('ng-click',"citasRevision("+$scope.evaluacionesCurso[i].idevaluacion+")");
-                    
-                    btnCitas.appendChild(spanCitas);
-
-                    editarCuerpo.appendChild(btnEditar);
-                    verCuerpo.appendChild(btnVer);
-                    citasCuerpo.appendChild(btnCitas);
-
-                    trCuerpo.appendChild(nombreCuerpo);
-                    trCuerpo.appendChild(porcentajeCuerpo);
-                    trCuerpo.appendChild(editarCuerpo);
-                    trCuerpo.appendChild(verCuerpo);
-                    trCuerpo.appendChild(citasCuerpo);
-
-                    tbody.appendChild(trCuerpo);
-                }
-
-                table.appendChild(tbody);
-            }
-
-            th.appendChild(div);
-            div.appendChild(table);
-            table.appendChild(thead);
-            thead.appendChild(trEncabezado);
-            trEncabezado.appendChild(rowNombre);
-            trEncabezado.appendChild(rowProcentaje);
-            trEncabezado.appendChild(rowEditar);
-            trEncabezado.appendChild(rowVer);
-            trEncabezado.appendChild(rowCitas);
-
-            var tabla = document.getElementById("tableCursos");
-            var rowCursos = tabla.insertRow(num+1);
-            rowCursos.appendChild(th);
-            /*
-            var flechita = table.rows[num].cells[0].firstChild;
-            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-down');*/
-        }
-
-        function ocultarEvaluaciones() {
-            var table = document.getElementById("tableCursos");
-            table.deleteRow($scope.rowSelected+1);
-            
-            /*
-            var flechita = table.rows[$scope.rowSelected].cells[0].firstChild;
-            flechita.setAttribute('class', 'glyphicon glyphicon-chevron-right');*/
-
-            $scope.rowSelected = 0;
-        }
-      
-                    
-        $scope.verEvaluaciones = verEvaluaciones;
-        function verEvaluaciones(row, id, nombre)
+        $scope.verEvaluaciones = function(id, gr,nombre)
         {
             $scope.cursoNombre = nombre;
             $scope.idGrupo = id;
+            $scope.numgrupo = gr;
+            $scope.evaluaciones = true;
             $http.get("./BD/getEvaluacionGrupo.php?grupo="+id)
             .success(function(response) {
                 $scope.evaluacionesCurso = response;
-                mostrarEvaluaciones(row);
             });
             
             $http.get("./BD/porcentajeTotal.php?grupo="+id)
