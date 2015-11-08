@@ -6,9 +6,9 @@ $conn = pg_connect($strconn);
 $idEval = $_REQUEST['idEval'];
 $cedula = $_REQUEST['cedula'];
 
-$query = "SELECT cr.idcita,cr.fecha,cr.hora_inicio,cr.hora_fin FROM citasrevision AS cr 
-INNER JOIN citasrevision_estudiantes AS cre ON cr.idcita != cre.idcita WHERE cr.idevaluacion=$idEval
-AND cre.cedula='$cedula'";
+$query = "SELECT DISTINCT cr.idcita,cr.fecha,cr.hora_inicio,cr.hora_fin FROM citasrevision AS cr 
+INNER JOIN citasrevision_estudiantes AS cre ON cr.idcita != cre.idcita WHERE cr.idevaluacion=$idEval";
+//AND cre.cedula='$cedula'";
 
 $result = pg_query($conn, $query);
 

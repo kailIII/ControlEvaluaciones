@@ -6,7 +6,7 @@ $conn = pg_connect($strconn);
 $idCita = $_REQUEST['idCita'];
 $cedula = $_REQUEST['cedula'];
 
-$query = "INSERT INTO citasrevision_estudiantes(cedula, idcita) VALUES ('$cedula', $idcita);";
+$query = "INSERT INTO citasrevision_estudiantes(cedula, idcita) VALUES ('$cedula', $idCita);";
 
 pg_query($conn, $query);
 

@@ -263,6 +263,10 @@ angular.module("app", ["ngRoute"])
             $scope.fechaCita = "";
             $scope.horaInicio = "";
             $scope.horaFin = "";
+                        
+            document.getElementById('tabNuevaCita').className = 'btn btn-primary';
+            document.getElementById('tabVerCitas').className = 'btn btn-default';
+            document.getElementById('modalCitas').className = 'modal-dialog modal-md';
         };
         
     })
@@ -307,10 +311,9 @@ angular.module("app", ["ngRoute"])
         }
         
         function agregarCitaRevision() {
-            alert($scope.citaSeleccionada);
             $http.get("./BD/insertarCitaRevisionEstudiante.php?idCita="+$scope.citaSeleccionada+"&cedula="+Data.info.cedula)
             .success(function(response) {
-                
+                console.log(response);
             }); 
         }
 
