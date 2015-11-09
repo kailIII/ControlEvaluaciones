@@ -14,80 +14,63 @@
 <div style="background: white" class="container">    
     <div class="panel-body">
         <h3> <span class =" label label-success">Mis cursos</span></h3>
-        <div style="overflow-y:auto; height:200px;">
-            <table class="table table-striped" id="tableCursos">
-              <thead>
-                <tr>                           
-                  <th>Codigo</th>
-                  <th>Grupo</th>
-                  <th>Nombre del curso</th>
-                  <th>&nbsp;</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="curso in MisCursos">                  
-                  <td>{{ curso.codigo }}</td>
-                  <td>{{ curso.numgrupo }}</td>
-                  <td>{{ curso.nombre }}</td>      
-                  <td>
-                      <button class="btn" ng-click="verEvaluaciones(curso.idgrupo, curso.numgrupo ,curso.nombre)">
-                        <span class="glyphicon glyphicon-list-alt"></span>  Ver Evaluaciones
-                      </button>
-                </tr>
-              </tbody>
-            </table>
-        </div>
+        <div>
+        <uib-accordion close-others="true">          
+          
+            <uib-accordion-group is-open="isopen" ng-repeat="curso in MisCursos">
+                <uib-accordion-heading>                
+                    <span ng-click="verEvaluaciones(curso.idgrupo, curso.numgrupo ,curso.nombre)">{{ curso.codigo }}&nbsp;&nbsp;-&nbsp;&nbsp;GR{{curso.numgrupo}}&nbsp;&nbsp;-&nbsp;&nbsp;{{curso.nombre}}</span>
+                    <i ng-click="verEvaluaciones(curso.idgrupo, curso.numgrupo ,curso.nombre)" class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
+                </uib-accordion-heading>
+                  <div style="overflow-y:auto; height:250px">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>          
+                          <th>Nombre</th>
+                          <th>Porcentaje</th>
+                          <th>Accion</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="evaluacion in evaluacionesCurso">
+                          <td>{{ evaluacion.nombre }}</td>
+                          <td>{{ evaluacion.porcentaje }}</td>
+                          <td>
+                            <button class="btn" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="editarEvaluacion(evaluacion.idevaluacion,evaluacion.nombre,evaluacion.porcentaje)">
+                              <span class="glyphicon glyphicon-edit"></span>  Editar
+                            </button>
+                              <button class="btn" data-toggle="modal" data-target="#historialNotas" ng-click="verNotas(evaluacion.idevaluacion, idGrupo,evaluacion.nombre,evaluacion.porcentaje)">
+                              <span class="glyphicon glyphicon-th-list"></span>  Ver notas
+                            </button>
+                            <button class="btn" data-toggle="modal" data-target="#CitasEval" ng-click="citasRevision(evaluacion.idevaluacion)">
+                              <span class="glyphicon glyphicon-calendar"></span>  Citas de revision
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                            <td><h3> <span class =" label label-default">Porcentaje</span></h3></td>
+                            <td><h3> <span class =" label label-default">{{porcentajeTotal}}</span></h3></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                      </tfoot>
+                    </table>        
+                </div>
+                <hr>
+                <button class="btn btn-success" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="agregarEvaluacion()">
+                    <span class="glyphicon glyphicon-plus"></span>  Nueva Evaluación
+                </button>
+                <br>
+            </uib-accordion-group>
+            
+        </uib-accordion>
+
+      </div>
+        
     </div>    
 </div>
-<br>
-
-<div ng-show="evaluaciones" style="background: white" class="container">
-<h3> <span class =" label label-default">{{cursoNombre}} - {{numgrupo}} - Evaluaciones</span></h3>
-    <div style="overflow-y:auto; height:200px">
-        <table class="table table-striped">
-          <thead>
-            <tr>          
-              <th>Nombre</th>
-              <th>Porcentaje</th>
-              <th>Accion</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="evaluacion in evaluacionesCurso">
-              <td>{{ evaluacion.nombre }}</td>
-              <td>{{ evaluacion.porcentaje }}</td>
-              <td>
-                <button class="btn" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="editarEvaluacion(evaluacion.idevaluacion,evaluacion.nombre,evaluacion.porcentaje)">
-                  <span class="glyphicon glyphicon-edit"></span>  Editar
-                </button>
-                  <button class="btn" data-toggle="modal" data-target="#historialNotas" ng-click="verNotas(evaluacion.idevaluacion, idGrupo,evaluacion.nombre,evaluacion.porcentaje)">
-                  <span class="glyphicon glyphicon-th-list"></span>  Ver notas
-                </button>
-                <button class="btn" data-toggle="modal" data-target="#CitasEval" ng-click="citasRevision(evaluacion.idevaluacion)">
-                  <span class="glyphicon glyphicon-calendar"></span>  Citas de revision
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-                <td><h3> <span class =" label label-default">Porcentaje</span></h3></td>
-                <td><h3> <span class =" label label-default">{{porcentajeTotal}}</span></h3></td>
-                <td>&nbsp;</td>
-            </tr>
-          </tfoot>
-        </table>        
-    </div>
-    <hr>
-    <button class="btn btn-success" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="agregarEvaluacion()">
-        <span class="glyphicon glyphicon-plus"></span>  Nueva Evaluación
-    </button>
-    <br>
-    <br>
-</div>
-<br>
-
 
 <div class="modal fade" id="ManteEvaluaciones" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
   <div class="modal-dialog">
@@ -220,5 +203,4 @@
         </div>
       </div>
     </div>
-  </div>
 </div>

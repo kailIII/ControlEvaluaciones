@@ -1,4 +1,4 @@
-angular.module("app", ["ngRoute"])
+angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
     .config(function($routeProvider){
         $routeProvider
             .when("/", {
@@ -284,6 +284,10 @@ angular.module("app", ["ngRoute"])
         $scope.conCita = false;
         $scope.sinCita = false;
         $scope.estadisticas = false;
+        
+        $scope.EstadisticasTab = false;
+        $scope.EvaluacionesTab = false;
+        
         $scope.verEvaluaciones = verEvaluaciones;
         $scope.logout = logout;
         $scope.citasRevision = citasRevision;
@@ -330,7 +334,7 @@ angular.module("app", ["ngRoute"])
                     $scope.conCita = true;
                 }
                 else {
-                    $http.get("./BD/citasRevisionEstudiante.php?idEval="+idEvaluacion+"&cedula="+$scope.info.cedula)
+                    $http.get("./BD/citasRevisionEstudiante.php?idEval="+idEvaluacion)
                     .success(function(response) {
 
                         $scope.citas = response;
@@ -360,6 +364,9 @@ angular.module("app", ["ngRoute"])
             $scope.showEvaluaciones = true;
             $scope.estadisticas = false;
             
+            $scope.EvaluacionesTab = true;
+            $scope.EstadisticasTab = false;
+            
             $http.get("./BD/getEvaluacionesStudent.php?cedula="+$scope.info.cedula+"&idGrupo="+id)
             .success(function(response) {
                 $scope.evaluacionesCurso = response;
@@ -367,4 +374,14 @@ angular.module("app", ["ngRoute"])
                     calcularNota(); 
             });
         };
+        
+        $scope.tabEval = function() {
+            $scope.EvaluacionesTab = true;
+            $scope.EstadisticasTab = false;
+        }
+        $scope.tabEstd = function() {
+            $scope.EvaluacionesTab = false;
+            $scope.EstadisticasTab = true;
+        }
+        
     });
