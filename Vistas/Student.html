@@ -14,29 +14,6 @@
 <div style="background: white" class="container">    
     <div class="panel-body">
         <h3> <span class =" label label-success">Mis cursos</span></h3>
-        <!--
-        <div style="overflow-y:auto; height:250px;">
-            <table class="table table-striped" id="tableCursos">
-              <thead>
-                <tr>         
-                  <th>Codigo</th>
-                  <th>Grupo</th>
-                  <th>Nombre del curso</th>
-                  <th>Ver evaluaciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="curso in MisCursos">
-                  <td>{{ curso.codigo }}</td>
-                  <td>{{ curso.numgrupo }}</td>
-                  <td>{{ curso.nombre }}</td>      
-                  <td><button ng-click="verEvaluaciones(curso.idgrupo, curso.nombre)" class="btn"><span class="glyphicon glyphicon-list-alt"></span></button></td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
-        
-        -->
         <div>
         <uib-accordion close-others="true">          
           
@@ -48,8 +25,8 @@
                 
                 <br>
                 <div class="btn-group">
-                    <button id="tabEvaluacion" type="button" ng-class="{'btn btn-primary': EvaluacionesTab, 'btn btn-default': !EvaluacionesTab}" ng-click="tabEval()">Evaluaciones</button>
                     <button id="tabEstadisticas" type="button" ng-class="{'btn btn-primary': EstadisticasTab, 'btn btn-default': !EstadisticasTab}" ng-click="tabEstd()">Estadisticas</button>
+                    <button id="tabEvaluacion" type="button" ng-class="{'btn btn-primary': EvaluacionesTab, 'btn btn-default': !EvaluacionesTab}" ng-click="tabEval()">Evaluaciones</button>
                 </div>                
                 <hr>                
                 <div ng-show="EstadisticasTab">
@@ -72,18 +49,21 @@
                             <tr>
                                 <td><strong>Nota</strong>
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{nota}}%;">
-                                            {{nota}}%
-                                        </div>
+                                      <div class="progress-bar" ng-class="{'progress-bar-success': nota >= 67.5, 'progress-bar-warning': nota >= 57.5 && nota <= 67.4, 'progress-bar-danger': nota <= 57.4}" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{nota}}%;">
+                                      {{nota}}%
+                                      </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong>Porcentaje proyectado de nota</strong>
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{notaProyectada}}%;">
+                                      <div class="progress-bar" ng-class="{'progress-bar-success': notaProyectada >= 67.5, 'progress-bar-warning': notaProyectada >= 57.5 && notaProyectada <= 67.4, 'progress-bar-danger': notaProyectada <= 57.4}" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{notaProyectada}}%;">
+                                      {{notaProyectada}}%
+                                      </div>
+                                        <!--<div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{notaProyectada}}%;">
                                             {{notaProyectada}}%
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </td>
                           </tr>

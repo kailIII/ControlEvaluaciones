@@ -60,7 +60,7 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
         };
     })
     
-    .controller("professorController", function($scope, $http, $location, $timeout, Data, $compile){
+    .controller("professorController", function($scope, $http, $location, $timeout, Data, $compile, $filter){
         $scope.rowSelected = 0;
         $scope.info = Data.info;
         $scope.MisCursos = {};
@@ -100,7 +100,7 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
 
         $scope.validarCita = function() 
         {
-            if(!$scope.fechaCita.length || !$scope.horaInicio.length || !$scope.horaFin.length) 
+            if(!$scope.horaInicio.length || !$scope.horaFin.length || ($scope.fechaCita === "" || $scope.fechaCita === null))
             {
                $scope.errorCitas = true;
             }
@@ -133,7 +133,9 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
         }
 
         $scope.agregarCitaRevision = function() {
-            $http.get("./BD/insertarCitaRevisionProfesor.php?idEval="+$scope.idEvaluacion+"&fecha="+$scope.fechaCita+"&horaInicio="+$scope.horaInicio+"&horaFin="+$scope.horaFin)
+            $scope.newFecha = $filter('date')($scope.fechaCita, 'yyyy-MM-dd');
+            
+            $http.get("./BD/insertarCitaRevisionProfesor.php?idEval="+$scope.idEvaluacion+"&fecha="+$scope.newFecha+"&horaInicio="+$scope.horaInicio+"&horaFin="+$scope.horaFin)
             .success(function(response) {
                 console.log(response);
             });
@@ -364,8 +366,8 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
             $scope.showEvaluaciones = true;
             $scope.estadisticas = false;
             
-            $scope.EvaluacionesTab = true;
-            $scope.EstadisticasTab = false;
+            $scope.EvaluacionesTab = false;
+            $scope.EstadisticasTab = true;
             
             $http.get("./BD/getEvaluacionesStudent.php?cedula="+$scope.info.cedula+"&idGrupo="+id)
             .success(function(response) {
