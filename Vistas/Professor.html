@@ -51,17 +51,35 @@
                       </tbody>
                       <tfoot>
                         <tr>
-                            <td><h3> <span class =" label label-default">Porcentaje</span></h3></td>
-                            <td><h3> <span class =" label label-default">{{porcentajeTotal}}</span></h3></td>
+                            <td><h3><span class="label label-default">Porcentaje</span></h3></td>
+                            <td><h3><span class="label label-default">{{porcentajeTotal}}</span></h3></td>
                             <td>&nbsp;</td>
                         </tr>
                       </tfoot>
                     </table>        
                 </div>
                 <hr>
-                <button class="btn btn-success" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="agregarEvaluacion()">
-                    <span class="glyphicon glyphicon-plus"></span>  Nueva Evaluación
+                <button ng-disabled="limitePorcentaje" class="btn btn-success" data-toggle="modal" data-target="#ManteEvaluaciones" ng-click="agregarEvaluacion()">
+                  <span class="glyphicon glyphicon-plus"></span>  Nueva Evaluación
                 </button>
+                <br><br>
+                <div ng-show="limitePorcentaje" class="alert alert-danger" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  No puede agregar más evaluaciones al curso. Ha alcanzado el límite de porcentaje.
+                </div>
+                <div ng-show="nuevaEvalOk" class="alert alert-success" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span ng-show="nueva">La evaluación se ha agregado correctamente.</span>
+                  <span ng-show="editar">La evaluación se ha modificado correctamente.</span>
+                </div>
+                <div ng-show="nuevaEvalError" class="alert alert-danger" role="alert">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span ng-show="nueva">Ha ocurrido un error al agregar la evaluación. El porcentaje de la nueva evaluación sobrepasa el porcentaje disponible.</span>
+                  <span ng-show="editar">Ha ocurrido un error al modificar la evaluación. El porcentaje de la evaluación sobrepasa el porcentaje disponible.</span>
+                </div>
                 <br>
             </uib-accordion-group>
             

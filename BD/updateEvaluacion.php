@@ -7,5 +7,5 @@ $n = $_REQUEST['nombre'];
 $p = $_REQUEST['porcentaje'];
 $i = $_REQUEST['id'];
 
-$query = "UPDATE evaluaciones SET nombre='$n', porcentaje=$p WHERE idevaluacion = $i;";
+$query = "UPDATE evaluaciones SET nombre='$n', porcentaje=$p WHERE idevaluacion = $i";
 pg_query($conn,$query) or die("Error actualizando la informacion.");
