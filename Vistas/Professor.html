@@ -68,17 +68,11 @@
                   <span class="sr-only">Error:</span>
                   No puede agregar más evaluaciones al curso. Ha alcanzado el límite de porcentaje.
                 </div>
-                <div ng-show="nuevaEvalOk" class="alert alert-success" role="alert">
+                <div ng-show="nuevaEvalOk" class="alert alert-success">
                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                   <span class="sr-only">Error:</span>
                   <span ng-show="nueva">La evaluación se ha agregado correctamente.</span>
                   <span ng-show="editar">La evaluación se ha modificado correctamente.</span>
-                </div>
-                <div ng-show="nuevaEvalError" class="alert alert-danger" role="alert">
-                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                  <span class="sr-only">Error:</span>
-                  <span ng-show="nueva">Ha ocurrido un error al agregar la evaluación. El porcentaje de la nueva evaluación sobrepasa el porcentaje disponible.</span>
-                  <span ng-show="editar">Ha ocurrido un error al modificar la evaluación. El porcentaje de la evaluación sobrepasa el porcentaje disponible.</span>
                 </div>
                 <br>
             </uib-accordion-group>
@@ -113,10 +107,15 @@
                 </div>
             </div>            
         </form>
+        <div ng-show="nuevaEvalError" class="alert alert-danger">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          <span>El porcentaje de la nueva evaluación sobrepasa el porcentaje disponible.</span>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button class="btn btn-success" data-dismiss="modal" ng-disabled="error" ng-click="guardarEvaluacion()">
+        <button class="btn btn-success" data-dismiss="modal" ng-disabled="error || nuevaEvalError" ng-click="guardarEvaluacion()">
             <span class="glyphicon glyphicon-floppy-disk"></span>  Guardar Cambios
         </button>
       </div>

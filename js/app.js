@@ -193,6 +193,9 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
 
         $scope.validar = function() 
         {
+            $scope.nuevaEvalOk = false;
+            $scope.nuevaEvalError = false;
+
             if(!$scope.nombreEvaluacion.length || !$scope.porcentajeEvaluacion.length || isNaN($scope.porcentajeEvaluacion)) 
             {
                $scope.error = true;
@@ -201,22 +204,40 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
             {
                $scope.error = false;
             }
+
+            if(($scope.nueva && 100 - $scope.porcentajeTotal >= $scope.porcentajeEvaluacion) || 
+                ($scope.editar && 100 - $scope.porcentajeParcial >= $scope.porcentajeEvaluacion)) {
+                
+            }
+            else {
+                $scope.nuevaEvalError = true;
+            }
         };
         
-        $scope.guardarEvaluacion = function()  {
-            $scope.nuevaEvalOk = false;
-            $scope.nuevaEvalError = false;
+        $scope.guardarEvaluacion = function() {
+            $scope.limitePorcentaje = false;
 
-            if($scope.nueva && 100 - $scope.porcentajeTotal >= $scope.porcentajeEvaluacion) {
+            if($scope.nueva) {
                 $http.get("./BD/insertarEvaluacion.php?id="+$scope.idGrupo+"&nombre="+$scope.nombreEvaluacion+"&porcentaje="+$scope.porcentajeEvaluacion)
                     .success(function(response){
                         if(response==="")
                         {
                             $http.get("./BD/getEvaluacionGrupo.php?grupo="+$scope.idGrupo)
-                            .success(function(response) {$scope.evaluacionesCurso = response;});
+                            .success(function(response) {
+                                $scope.evaluacionesCurso = response;
+                            });
                     
                             $http.get("./BD/porcentajeTotal.php?grupo="+$scope.idGrupo)
-                            .success(function(response) {if(response !== ""){$scope.porcentajeTotal = response;}else{$scope.porcentajeTotal =0;}});
+                            .success(function(response) {
+                                if(response !== "") {
+                                    $scope.porcentajeTotal = response;
+                                    $scope.limitePorcentaje = (response >= 100 ? true : false);
+                                }
+                                else {
+                                    $scope.porcentajeTotal =0;
+                                }
+                            });
+
                             $scope.nueva = false;
                         }
                         else
@@ -224,10 +245,8 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
                             alert("Error insertando la evaluacion.");
                         }
                     });
-
-                $scope.nuevaEvalOk = true;
             }
-            else if($scope.editar && 100 - $scope.porcentajeParcial >= $scope.porcentajeEvaluacion) {
+            else {
                 $http.get("./BD/updateEvaluacion.php?id="+$scope.idEvaluacion+"&nombre="+$scope.nombreEvaluacion+"&porcentaje="+$scope.porcentajeEvaluacion)
                     .success(function(response) {
                         if(response === "") {
@@ -250,13 +269,10 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
                         else {
                             alert("Error actualizando la informacion.");
                         }
-                    });
+                    });   
+            }
 
-                $scope.nuevaEvalOk = true;    
-            }
-            else {
-                $scope.nuevaEvalError = true;
-            }
+            $scope.nuevaEvalOk = true;
 
             $timeout(function(){
                 $scope.nuevaEvalOk = false;
