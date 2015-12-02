@@ -234,7 +234,7 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
                                     $scope.limitePorcentaje = (response >= 100 ? true : false);
                                 }
                                 else {
-                                    $scope.porcentajeTotal =0;
+                                    $scope.porcentajeTotal = 0;
                                 }
                             });
 
@@ -259,9 +259,10 @@ angular.module("app", ["ngRoute", 'ngAnimate', 'ui.bootstrap'])
                             .success(function(response) {
                                 if(response !== "") {
                                     $scope.porcentajeTotal = response;
+                                    $scope.limitePorcentaje = (response >= 100 ? true : false);
                                 }
                                 else {
-                                    $scope.porcentajeTotal =0;
+                                    $scope.porcentajeTotal = 0;
                                 }
                             });
                             $scope.editar = false;
